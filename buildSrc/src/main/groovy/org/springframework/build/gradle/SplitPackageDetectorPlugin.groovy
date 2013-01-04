@@ -47,12 +47,14 @@ public class SplitPackageDetectorTask extends DefaultTask {
 
 	@TaskAction
 	public final void diagnoseSplitPackages() {
+        def Map<File, File> mergeMap= [:]
 		def projects = project.subprojects.findAll { it.plugins.findPlugin(org.springframework.build.gradle.MergePlugin) }.findAll { it.merge.into }
 		projects.each { p ->
 			println '    > The project directory '+ p.projectDir + ' will merge into ' + p.merge.into.projectDir
+            mergeMap.put(p.projectDir, p.merge.into.projectDir)
 		}
-		def splitFound = new org.springframework.build.gradle.SplitPackageDetector(inputDir.absolutePath, project.logger).diagnoseSplitPackages();
-		assert !splitFound
+		def splitFound = new org.springframework.build.gradle.SplitPackageDetector(inputDir.absolutePath, mergeMap, project.logger).diagnoseSplitPackages();
+		assert !splitFound // see error log messages for details of split packages
 	}
 }
 
@@ -64,11 +66,14 @@ class SplitPackageDetector {
 
 	private static final String SRC_MAIN_JAVA = "src" + File.separator + "main" + File.separator + "java"
 
+    private final Map<File, File> mergeMap
+
 	private final Map<File, Set<String>> pkgMap = [:]
 
 	private final logger
 
-	SplitPackageDetector(baseDir, logger) {
+	SplitPackageDetector(baseDir, mergeMap, logger) {
+        this.mergeMap = mergeMap
 		this.logger = logger
 		dirList(baseDir).each { File dir ->
 			def packages = getPackagesInDirectory(dir)
@@ -103,7 +108,7 @@ class SplitPackageDetector {
 				def dj = dirs[j]
 				def pj = pkgMap.get(dj)
 				pi.retainAll(pj)
-				if (!pi.isEmpty()) {
+				if (!pi.isEmpty() && mergeMap.get(di) != dj && mergeMap.get(dj) != di) {
 					logger.error("Packages $pi are split between directories '$di' and '$dj'")
 					splitFound = true
 				}
