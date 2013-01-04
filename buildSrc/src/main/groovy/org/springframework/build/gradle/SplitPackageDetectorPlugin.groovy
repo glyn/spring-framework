@@ -36,7 +36,7 @@ import org.gradle.api.invocation.*
 class SplitPackageDetectorPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		Task diagnoseSplitPackages = project.tasks.add('diagnoseSplitPackages', SplitPackageDetectorTask.class)
-		diagnoseSplitPackages.setDescription('Detects split packages')
+		diagnoseSplitPackages.setDescription('Detects packages which will be split across JARs')
 		//project.tasks.findByName('build').dependsOn(diagnoseSplitPackages)
 	}
 }
