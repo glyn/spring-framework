@@ -45,6 +45,9 @@ public class SplitPackageDetectorTask extends DefaultTask {
 	@InputDirectory
 	File inputDir
 
+    @Input
+    Map<File, String>  permissibleSplitPackages
+
 	@TaskAction
 	public final void diagnoseSplitPackages() {
         def Map<File, File> mergeMap= [:]
