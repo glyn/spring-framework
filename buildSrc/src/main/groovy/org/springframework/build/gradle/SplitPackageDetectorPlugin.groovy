@@ -44,8 +44,7 @@ public class SplitPackageDetectorTask extends DefaultTask {
     @TaskAction
     public final void diagnoseSplitPackages() {
         def Map<Project, Project> mergeMap = [:]
-        //TODO: use projectsToScan in place of project.subprojects below
-        def projects = project.subprojects.findAll { it.plugins.findPlugin(org.springframework.build.gradle.MergePlugin) }.findAll { it.merge.into }
+        def projects = projectsToScan.findAll { it.plugins.findPlugin(org.springframework.build.gradle.MergePlugin) }.findAll { it.merge.into }
         projects.each { p ->
             mergeMap.put(p, p.merge.into)
         }
