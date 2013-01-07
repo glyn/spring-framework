@@ -774,8 +774,7 @@ configure(rootProject) {
 	}
 
     diagnoseSplitPackages {
-        inputDir = project.projectDir
-        permissibleSplitPackages = [:]
+        projectsToScan = project.subprojects
     }
 
     // don"t publish the default jar for the root project
