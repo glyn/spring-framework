@@ -61,6 +61,8 @@ class SplitPackageDetector {
 
     private static final String SRC_MAIN_JAVA = "src" + File.separator + "main" + File.separator + "java"
 
+    private static final String PACKAGE_SEPARATOR = "."
+
     private final Map<Project, Project> mergeMap
 
     private final Map<Project, Set<String>> pkgMap = [:]
@@ -106,7 +108,7 @@ class SplitPackageDetector {
                 pkgi.retainAll(pkgj)
                 if (!pkgi.isEmpty() && mergeMap.get(pi) != pj && mergeMap.get(pj) != pi) {
                     pkgi.each { pkg ->
-                        def readablePkg = pkg.substring(1).replaceAll(File.separator, ".")
+                        def readablePkg = pkg.substring(1).replaceAll(File.separator, PACKAGE_SEPARATOR)
                         logger.error("Package '$readablePkg' is split between $pi and $pj")
                     }
                     splitFound = true
