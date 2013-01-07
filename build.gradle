@@ -774,7 +774,7 @@ configure(rootProject) {
 	}
 
     diagnoseSplitPackages {
-        projectsToScan = project.subprojects
+        projectsToScan = project.subprojects - project(":spring-instrument-tomcat") // SPR-10150
     }
 
     // don"t publish the default jar for the root project
