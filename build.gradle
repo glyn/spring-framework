@@ -8,15 +8,6 @@ buildscript {
 	}
 }
 
-configure(rootProject) {
-    apply plugin: org.springframework.build.gradle.SplitPackageDetectorPlugin
-
-	diagnoseSplitPackages {
-		inputDir = project.projectDir
-        permissibleSplitPackages = [:]
-	}
-}
-
 configure(allprojects) {
 	ext.aspectjVersion  = "1.7.1"
 	ext.easymockVersion = "2.5.2"
@@ -775,13 +766,19 @@ configure(rootProject) {
 	apply plugin: "docbook-reference"
 	apply plugin: "groovy"
 	apply from: "${gradleScriptDir}/jdiff.gradle"
+    apply plugin: org.springframework.build.gradle.SplitPackageDetectorPlugin
 
-	reference {
+    reference {
 		sourceDir = file("src/reference/docbook")
 		pdfFilename = "spring-framework-reference.pdf"
 	}
 
-	// don"t publish the default jar for the root project
+    diagnoseSplitPackages {
+        inputDir = project.projectDir
+        permissibleSplitPackages = [:]
+    }
+
+    // don"t publish the default jar for the root project
 	configurations.archives.artifacts.clear()
 
 	dependencies { // for integration tests
@@ -805,6 +802,8 @@ configure(rootProject) {
 		testCompile("org.aspectj:aspectjweaver:${aspectjVersion}")
 		testCompile("hsqldb:hsqldb:${hsqldbVersion}")
 	}
+
+    build.dependsOn diagnoseSplitPackages
 
 	task api(type: Javadoc) {
 		group = "Documentation"
