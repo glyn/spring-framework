@@ -37,7 +37,6 @@ class SplitPackageDetectorPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		Task diagnoseSplitPackages = project.tasks.add('diagnoseSplitPackages', SplitPackageDetectorTask.class)
 		diagnoseSplitPackages.setDescription('Detects packages which will be split across JARs')
-		//project.tasks.findByName('build').dependsOn(diagnoseSplitPackages)
 	}
 }
 
@@ -53,7 +52,6 @@ public class SplitPackageDetectorTask extends DefaultTask {
         def Map<File, File> mergeMap= [:]
 		def projects = project.subprojects.findAll { it.plugins.findPlugin(org.springframework.build.gradle.MergePlugin) }.findAll { it.merge.into }
 		projects.each { p ->
-			println '    > The project directory '+ p.projectDir + ' will merge into ' + p.merge.into.projectDir
             mergeMap.put(p.projectDir, p.merge.into.projectDir)
 		}
 		def splitFound = new org.springframework.build.gradle.SplitPackageDetector(inputDir.absolutePath, mergeMap, project.logger).diagnoseSplitPackages();
