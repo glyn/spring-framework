@@ -802,7 +802,7 @@ configure(rootProject) {
 		testCompile("hsqldb:hsqldb:${hsqldbVersion}")
 	}
 
-    build.dependsOn diagnoseSplitPackages
+    check.dependsOn diagnoseSplitPackages
 
 	task api(type: Javadoc) {
 		group = "Documentation"
